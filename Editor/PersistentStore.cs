@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Threading.Tasks;
 
 using UnityEngine;
 
@@ -80,12 +81,20 @@ namespace StatsigUnity
                 {
                     ParseAndSaveInitResponse(values);
                 }
-                PlayerPrefs.SetString(cacheKey, values);
-                PlayerPrefs.Save();
+                storeDataPersistently(cacheKey, values);
             }
             catch (Exception e)
             {
             }
+        }
+        
+        internal async Task storeDataPersistently(string cacheKey, string values)
+        {
+            await Task.Run(() =>
+            {
+                PlayerPrefs.SetString(cacheKey, values);
+                PlayerPrefs.Save();
+            });
         }
 
         string getUserValueKey(StatsigUser user)
